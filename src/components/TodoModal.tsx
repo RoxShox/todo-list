@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from "react"
+import React, { FormEvent, useEffect, useState } from "react"
+// @ts-ignore
 import { v4 as uuid } from "uuid"
 import { MdOutlineClose } from "react-icons/md"
 import { useDispatch } from "react-redux"
 import { AnimatePresence, motion } from "framer-motion"
 import toast from "react-hot-toast"
-import { addTodo, updateTodo } from "../slices/todoSlice"
+import { addTodo, updateTodo } from "../store/slices/todoSlice"
 import styles from "../styles/modules/modal.module.scss"
 import Button from "./Button"
 import { formatDateToInputDate } from "../utils/formatDate"
+import { ButtonTypes, ITodo } from "../type"
 
 const dropIn = {
 	hidden: {
@@ -30,7 +32,14 @@ const dropIn = {
 	},
 }
 
-function TodoModal({ type, modalOpen, setModalOpen, todo }) {
+type TodoModalProps = {
+	type: string
+	modalOpen: boolean
+	setModalOpen: (active: boolean) => void
+	todo?: ITodo
+}
+
+function TodoModal({ type, modalOpen, setModalOpen, todo }: TodoModalProps) {
 	const dispatch = useDispatch()
 	const [title, setTitle] = useState("")
 	const [date, setDate] = useState("")
@@ -44,13 +53,15 @@ function TodoModal({ type, modalOpen, setModalOpen, todo }) {
 			setDate("")
 		}
 	}, [type, todo, modalOpen])
-	const handleSubmit = (e) => {
+
+	const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
 		if (title === "") {
 			toast.error("Please enter a title")
 			return
 		}
 		if (title && date) {
+			console.log(date)
 			if (type === "add") {
 				dispatch(
 					addTodo({
@@ -63,7 +74,7 @@ function TodoModal({ type, modalOpen, setModalOpen, todo }) {
 				toast.success("Task added successfully")
 			}
 			if (type === "update") {
-				if (todo.title !== title || todo.date !== date) {
+				if (todo?.title !== title || todo?.date !== date) {
 					dispatch(updateTodo({ ...todo, title, date }))
 					toast.success("Task Updated successfully")
 				} else {
@@ -130,10 +141,13 @@ function TodoModal({ type, modalOpen, setModalOpen, todo }) {
 							</label>
 
 							<div className={styles.buttonContainer}>
-								<Button type="submit" variant="primary">
+								<Button type="submit" variant={ButtonTypes.primary}>
 									{type === "add" ? "Add Task" : "Update Task"}
 								</Button>
-								<Button variant="secondary" onClick={() => setModalOpen(false)}>
+								<Button
+									variant={ButtonTypes.secondary}
+									onClick={() => setModalOpen(false)}
+								>
 									Cancel
 								</Button>
 							</div>

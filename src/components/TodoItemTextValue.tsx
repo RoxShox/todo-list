@@ -1,7 +1,14 @@
 import React from "react"
 import { getClasses } from "../utils/getClasses"
 import styles from "../styles/modules/todoItem.module.scss"
-const TodoItemTextValue = ({ textValue, todo }) => {
+import { ITodo } from "../type"
+
+type TodoItemTextValueProps = {
+	textValue: string | number
+	todo: ITodo
+}
+
+const TodoItemTextValue = ({ textValue, todo }: TodoItemTextValueProps) => {
 	return (
 		<div className={styles.texts}>
 			<p

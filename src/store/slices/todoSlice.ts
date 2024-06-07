@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit"
+import { ITodo } from "../../type"
 
 const getInitialTodo = () => {
 	// getting todo list
@@ -7,11 +8,23 @@ const getInitialTodo = () => {
 	if (localTodoList) {
 		return JSON.parse(localTodoList)
 	}
-	window.localStorage.setItem("todoList", [])
+	window.localStorage.setItem("todoList", [] as any)
 	return []
 }
 
-const initialValue = {
+interface ISortStates {
+	sortId: string
+	sortState: string
+}
+
+interface IInitialState {
+	filterStatus: string
+	todoList: ITodo[]
+	sortId: string
+	sortStates: ISortStates
+}
+
+const initialValue: IInitialState = {
 	filterStatus: "all",
 	todoList: getInitialTodo(),
 	sortId: "",
@@ -44,12 +57,13 @@ export const todoSlice = createSlice({
 					])
 				)
 			}
+			console.log(state.todoList)
 		},
 		updateTodo: (state, action) => {
 			const todoList = window.localStorage.getItem("todoList")
 			if (todoList) {
 				const todoListArr = JSON.parse(todoList)
-				todoListArr.forEach((todo) => {
+				todoListArr.forEach((todo: ITodo) => {
 					if (todo.id === action.payload.id) {
 						todo.status = action.payload.status
 						todo.title = action.payload.title
@@ -63,7 +77,7 @@ export const todoSlice = createSlice({
 			const todoList = window.localStorage.getItem("todoList")
 			if (todoList) {
 				const todoListArr = JSON.parse(todoList)
-				todoListArr.forEach((todo, index) => {
+				todoListArr.forEach((todo: ITodo, index: number) => {
 					if (todo.id === action.payload) {
 						todoListArr.splice(index, 1)
 					}

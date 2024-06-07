@@ -4,12 +4,13 @@ import toast from "react-hot-toast"
 import React, { useEffect, useState } from "react"
 import { MdDelete, MdEdit } from "react-icons/md"
 import { useDispatch } from "react-redux"
-import { deleteTodo, updateTodo } from "../slices/todoSlice"
+import { deleteTodo, updateTodo } from "../store/slices/todoSlice"
 import styles from "../styles/modules/todoItem.module.scss"
 import { getClasses } from "../utils/getClasses"
 import CheckButton from "./CheckButton"
 import TodoModal from "./TodoModal"
 import TodoItemTextValue from "./TodoItemTextValue"
+import { ITodo } from "../type"
 
 const child = {
 	hidden: { y: 20, opacity: 0 },
@@ -19,7 +20,11 @@ const child = {
 	},
 }
 
-function TodoItem({ todo }) {
+type TodoItemProps = {
+	todo: ITodo
+}
+
+function TodoItem({ todo }: TodoItemProps) {
 	const dispatch = useDispatch()
 	const [checked, setChecked] = useState(false)
 	const [updateModalOpen, setUpdateModalOpen] = useState(false)

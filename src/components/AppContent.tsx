@@ -1,8 +1,8 @@
 import { AnimatePresence, motion } from "framer-motion"
 import React, { useState } from "react"
-import { useSelector } from "react-redux"
 import styles from "../styles/modules/app.module.scss"
 import TodoItem from "./TodoItem"
+import { useAppSelector } from "../hooks/redux"
 
 const container = {
 	hidden: { opacity: 1 },
@@ -38,20 +38,20 @@ function AppContent() {
 		field: sortField.title,
 		mode: sortModes.none,
 	})
-	const { todoList, sortStates } = useSelector((state) => state.todo)
+	const { todoList, sortStates } = useAppSelector((state) => state.todo)
 	const sortedTodoList = [...todoList]
 
-	sortedTodoList.sort((a, b) => {
+	sortedTodoList.sort((a: any, b: any) => {
 		// Если прихдит asc делаем сортировку по возрастанию
 
 		if (sorting.mode === "asc") {
 			// проверяем наше значение на тип, если number, тогда отнимаем a - b
-			if (typeof a[sorting.field] === "number") {
-				return a[sorting.field] - b[sorting.field]
+			if (typeof a[sorting.field] === "string") {
+				return a[sorting.field].localeCompare(b[sorting.field])
 			}
 			//в остальных случаях сравниваем как строки по методу localeCompare
 			else {
-				return a[sorting.field].localeCompare(b[sorting.field])
+				return a[sorting.field] - b[sorting.field]
 			}
 			// Такая же система, только уже по убыванию
 		} else if (sorting.mode === "desc") {
@@ -62,7 +62,7 @@ function AppContent() {
 			}
 		}
 	})
-	const sortHandler = (title) => {
+	const sortHandler = (title: string) => {
 		if (sorting.field === title) {
 			const currentMode = sorting.mode
 			const modeValues = Object.values(sortModes)
@@ -81,7 +81,7 @@ function AppContent() {
 			})
 		}
 	}
-	const getSortButtonClassName = (field) => {
+	const getSortButtonClassName = (field: string) => {
 		if (sorting.field === field) {
 			return `sort-${sorting.mode}`
 		}
